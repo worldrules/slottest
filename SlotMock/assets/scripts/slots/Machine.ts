@@ -25,7 +25,10 @@ export default class Machine extends cc.Component {
   }
 
   @property({ type: cc.Integer })
-  public _numberOfReels = 3;
+  public _numberOfLines = 3;
+
+  @property({ type: cc.Integer })
+  public _numberOfReels = 5;
 
   @property({ type: cc.Integer, range: [3, 6], slide: true })
   get numberOfReels(): number {
@@ -34,6 +37,22 @@ export default class Machine extends cc.Component {
 
   set numberOfReels(newNumber: number) {
     this._numberOfReels = newNumber;
+
+    if (this.reelPrefab !== null) {
+      this.createMachine();
+    }
+  }
+
+  @property({ type: cc.Integer })
+  public _numberOfPrizes = 30;
+
+  @property({ type: cc.Integer, range: [10, 30], slide: true })
+  get numberOfPrizes(): number {
+    return this._numberOfPrizes;
+  }
+
+  set numberOfPrizes(newNumber: number) {
+    this._numberOfPrizes = newNumber;
 
     if (this.reelPrefab !== null) {
       this.createMachine();
@@ -88,6 +107,10 @@ export default class Machine extends cc.Component {
       this.spinning = false;
       this.button.getComponent(cc.Button).interactable = true;
       this.button.getChildByName('Label').getComponent(cc.Label).string = 'SPIN';
+
+      for (let i = 0; i < this.numberOfReels; i += 1) {
+        this.reels[i].getComponent('Reel').doAnimate();
+      }
     }, 2500);
 
     const rngMod = Math.random() / 2;
